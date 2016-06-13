@@ -1,0 +1,75 @@
+header{
+    margin-bottom: 100px;
+}
+
+#custom-search-input{
+    padding: 3px;
+    border: solid 1px #E4E4E4;
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+#custom-search-input input{
+    border: 0;
+    box-shadow: none;
+    text-transform: uppercase;
+    display: inline-block;
+    width: 50%;
+}
+
+#custom-search-input button{
+    margin: 2px 0 0 0;
+    background: none;
+    box-shadow: none;
+    border: 0;
+    color: #666666;
+    padding: 0 8px 0 10px;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input button:hover{
+    border: 0;
+    box-shadow: none;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input .fa-search{
+    font-size: 23px;
+}
+
+.bold{
+    font-weight: bold;
+}
+
+#stock-chart{
+    /*background-color: gray;*/
+}
+
+/*Stuff for the range selector*/
+#custom-search-input .range-selector input[type="radio"] {
+    display:none; 
+}
+
+.range-selector{
+    margin-right: 16px;
+}
+
+.range-selector label {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    display:inline-block;
+    margin-top: 8px;    
+    background-color:white;
+    padding:4px 12px;
+    font-family:Arial;
+    font-size:16px;
+}
+
+.range-selector input[type="radio"]:checked + label { 
+    background-color:#4cae4c;
+    color: white;
+}
+
+.action{
+    margin-left: 10px;
+}

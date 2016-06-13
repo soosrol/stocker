@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="img/favicon.png">
+
+  <title>Stocker - Free stock price alerts</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1"
+    crossorigin="anonymous">
+  <link href="css/app.css" rel="stylesheet">
+
+
+  <!--Firebase-->
+  <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyBpjhIWEcUP4Rf7zP7RjRnBGcj3L59RprE",
+      authDomain: "stocker-56fb8.firebaseapp.com",
+      databaseURL: "https://stocker-56fb8.firebaseio.com",
+      storageBucket: "stocker-56fb8.appspot.com",
+    };
+    firebase.initializeApp(config);
+  </script>
+
+
+</head>
+
+<body>
+  <header class="item header margin-top-0 padding-bottom-0" id="header5">
+    <div class="wrapper">
+      <div class="container">
+        <nav role="navigation" class="navbar navbar-inverse navbar-embossed navbar-lg navbar-fixed-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button data-target="#navbar-collapse-02" data-toggle="collapse" class="navbar-toggle" type="button">
+    								<span class="sr-only">Toggle navigation</span>
+    							</button>
+              <a href="#" class="navbar-brand brand"> STOCKER™ </a>
+            </div>
+            <div id="navbar-collapse-02" class="collapse navbar-collapse">
+              <ul class="nav navbar-nav navbar-right">
+                <li class="propClone">
+                  <a id="logout" href="#">Logout (<span id="user-email"></span>) <span class="fa fa-sign-out"></span></a>
+                </li>
+              </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+          </div>
+          <!-- /.container -->
+        </nav>
+      </div>
+      <!-- /.container -->
+    </div>
+    <!-- /.wrapper -->
+  </header>
+  <!-- /.item -->
+  <div id="page" style="display:none;" class="page">
+    <div class="container">
+      <div class="row controls">
+        <div class="symbol col-sm-8">
+          <!--SEARCH BOX-->
+          <div id="custom-search-input">
+            <div class="input-group col-md-12">
+              <span>
+                <input id="symbol" type="text" class="form-control input-lg" placeholder="symbol" />
+                <div class="range-selector pull-right">
+                  <input type="radio" id="radio-1d" name="range" value="1d" checked>
+                  <label for="radio-1d">1D</label>
+                  <input type="radio" id="radio-1m" name="range"value="1m">
+                  <label for="radio-1m">1M</label>
+                  <input type="radio" id="radio-3m" name="range" value="3m">
+                  <label for="radio-3m">3M</label> 
+                  <input type="radio" id="radio-6m" name="range" value="6m">
+                  <label for="radio-6m">6M</label> 
+                  <input type="radio" id="radio-1y" name="range" value="1y">
+                  <label for="radio-1y">1Y</label> 
+              </div>
+              </span>
+
+              <span class="input-group-btn">
+                <button id="search-button" class="btn btn-info btn-lg" type="button">
+                    <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+          </div>
+          <!--SEARCH BOX-->
+          <!--CHART-->
+          <canvas id="stock-chart" class="col-sm-12"></canvas>
+          <!--CHART-->
+        </div>
+        <div class="settings col-md-4">
+          <!--ALERT SETTINGS-->
+          <form class="form-horizontal">
+            <fieldset>
+
+              <!-- Rule Select -->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="rule-select">Rule</label>
+                <div class="col-md-8">
+                  <select id="rule-select" name="rule-select" class="form-control bold">
+                    <option value="LESS THAN">Less than (&lt;)</option>
+                    <option value="LESS THAN OR EQUAL">Less than or equal  (&lt;=)</option>
+                    <option value="MORE THAN OR EQUAL">More than or equal  (&gt;=)</option>
+                    <option value="MORE THAN">More than  (&gt;)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Price text input-->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="price-input">Price</label>
+                <div class="col-md-8">
+                  <input id="price-input" name="price-input" type="text" placeholder="Price" class="form-control bold decimalinput" required="" onkeypress="return isNumberKey(event)">
+                </div>
+              </div>
+
+              <!-- Repeat radios (inline) -->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="radios">Repeat</label>
+                <div class="col-md-8">
+                  <label class="radio-inline" for="radios-0"><input type="radio" name="radios" id="radios-0" value="ONCE" checked="checked">Once</label>
+                  <label class="radio-inline" for="radios-1"><input type="radio" name="radios" id="radios-1" value="UNTIL DELETED">Until deleted</label>
+                </div>
+              </div>
+
+              <!-- Set alert button -->
+              <div class="form-group ">
+                <label class="col-md-4 control-label" for="set-alert-button"></label>
+                <div class="col-md-8">
+                  <button id="set-alert-button" name="set-alert-button" class="btn btn-success col-md-12">Set alert</button>
+                </div>
+              </div>
+
+            </fieldset>
+          </form>
+          <!--ALERT SETTINGS-->
+
+        </div>
+      </div>
+
+      <!--ALERT LIST-->
+      <div class="row alerts">
+        <table class="table table-hover">
+          <h2>Active alerts</h2>
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Rule</th>
+              <th>Price</th>
+              <th>Repeat</th>
+            </tr>
+          </thead>
+          <tbody id="alert-list">
+          </tbody>
+        </table>
+      </div>
+      <!--ALERT LIST-->
+
+    </div>
+
+
+
+ <!-- Modal -->
+  <div class="modal fade" id="edit-modal" role="dialog">
+    <div class="modal-dialog">    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Edit alert</h4>
+        </div>
+        <div class="modal-body">
+          
+          <form id="modalform" class="form-horizontal">
+            <fieldset>
+
+              <!-- Symbol text input-->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="modal-symbol-input">Symbol</label>
+                <div class="col-md-8">
+                  <input id="modal-symbol-input" name="modal-symbol-input" type="text" placeholder="Symbol" class="form-control bold" required="">
+                </div>
+              </div>
+
+              <!-- Rule Select -->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="modal-rule-select">Rule</label>
+                <div class="col-md-8">
+                  <select id="modal-rule-select" name="modal-rule-select" class="form-control bold">
+                    <option value="LESS THAN">Less than (&lt;)</option>
+                    <option value="LESS THAN OR EQUAL">Less than or equal  (&lt;=)</option>
+                    <option value="MORE THAN OR EQUAL">More than or equal  (&gt;=)</option>
+                    <option value="MORE THAN">More than  (&gt;)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Price text input-->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="modal-price-input">Price</label>
+                <div class="col-md-8">
+                  <input id="modal-price-input" name="modal-price-input" type="text" placeholder="Price" class="form-control bold decimalinput" required="" onkeypress="return isNumberKey(event)">
+                </div>
+              </div>
+
+              <!-- Repeat radios (inline) -->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="modal-radios">Repeat</label>
+                <div class="col-md-8">
+                  <label class="radio-inline" for="modal-radios-0"><input type="radio" name="modal-radios" id="modal-radios-0" value="ONCE">Once</label>
+                  <label class="radio-inline" for="modal-radios-1"><input type="radio" name="modal-radios" id="modal-radios-1" value="UNTIL DELETED">Until deleted</label>
+                </div>
+              </div>
+            </fieldset>
+            
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  <!-- /#page -->
+
+ 
+
+  <!-- /#loginarea -->
+  <div id="loginarea" style="display:none;">
+    <form class="form-horizontal">
+      <fieldset>
+
+        <!-- Form Name -->
+        <h2 class="text-center">Welcome to Stocker.</h2>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="email"></label>
+          <div class="col-md-4">
+            <input id="email" name="email" type="email" placeholder="Enter your e-mail address." class="form-control input-lg" required="">
+
+          </div>
+        </div>
+
+        <!-- Password input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="password"></label>
+          <div class="col-md-4">
+            <input id="password" name="password" type="password" placeholder="Enter your password." class="form-control input-lg" required="">
+          </div>
+        </div>
+
+        <!-- Button -->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="sign-in-button"></label>
+          <div class="col-md-4 text-center">
+            <button id="sign-in-button" name="sign-in-button" class="btn btn-primary btn-lg">Sign in</button>
+          </div>
+        </div>
+
+      </fieldset>
+    </form>
+  </div>
+  <!-- /#loginarea -->
+
+
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+    crossorigin="anonymous"></script>
+
+
+  <!-- Chart lib -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
+
+  <!--App stuff-->
+  <script src="js/utils.js"></script>
+  <script src="js/cookie.js"></script>
+  <script src="js/stocker.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
