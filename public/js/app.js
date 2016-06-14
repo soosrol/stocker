@@ -13,7 +13,15 @@ $("#logout").click(function(e){
 
 $("#set-alert-button").click(function(e){
     e.preventDefault();
-    Stocker.setAlert();
+    Stocker.setAlert();    
+});
+
+$("#symbol").keyup(function(e) {
+    // 13 is ENTER
+    if (e.which === 13) {
+        e.preventDefault();
+        doSearch();
+    }
 });
 
 $("#search-button").click(function(e){

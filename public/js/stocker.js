@@ -5,6 +5,9 @@ Stocker.setAlert = function () {
     var rule = $("#rule-select").val();
     var price = $("#price-input").val();
     var repeat = $("input[name='radios']:checked").val();
+    
+    if(!symbol || !rule || !price || !repeat) return false;
+    
     var uid = firebase.auth().currentUser.uid;
     var email = firebase.auth().currentUser.email;
 
@@ -23,6 +26,7 @@ Stocker.setAlert = function () {
     updates['/alerts/' + newAlertKey] = alertData;
     updates['/user-alerts/' + uid + '/' + newAlertKey] = alertData;
 
+    $("#price-input").val('');
     return firebase.database().ref().update(updates);
 }
 
